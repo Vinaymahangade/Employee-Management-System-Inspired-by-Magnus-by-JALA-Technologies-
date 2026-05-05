@@ -166,6 +166,7 @@ password: admin123
 User:
 email: john@jala.com
 password: user123
+
 ---
 
 ## 📡 API Endpoints
@@ -222,16 +223,4 @@ Repository    → JPA CRUD + custom JPQL queries
 Entity        → JPA-mapped PostgreSQL table with audit fields
 ```
 
----
-
-## 🧪 Testing with Swagger UI
-
-1. Run backend → visit http://localhost:8080/swagger-ui.html
-2. Click `POST /api/auth/login` → Try it out
-3. Enter: `{ "email": "admin@jala.com", "password": "admin123" }`
-4. Copy the `token` from response
-5. Click **Authorize** button (top right) → paste `Bearer <token>`
-6. Now all secured endpoints are accessible
-
----
 
