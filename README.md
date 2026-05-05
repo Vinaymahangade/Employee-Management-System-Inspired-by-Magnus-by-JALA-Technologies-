@@ -1,9 +1,13 @@
-# 🏢 JALA Employee Management System
+# EmpFlow – Employee Management System
 
-> **Production-level full-stack application**  
-> Spring Boot · PostgreSQL · JWT · Vanilla JS
+This is a full-stack Employee Management System built using Spring Boot and JavaScript. The project is inspired by the Magnus application from JALA Technologies, but implemented with my own backend structure and logic.
 
----
+Tech Stack
+Backend: Spring Boot (Java)
+Frontend: HTML, CSS, JavaScript
+Database: PostgreSQL
+Security: JWT Authentication
+Build Tool: Maven
 
 ## 📁 Project Structure
 
@@ -106,8 +110,8 @@ Edit `backend/src/main/resources/application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/emp_management_db
-spring.datasource.username=postgres       ← change if different
-spring.datasource.password=postgres       ← change to your password
+spring.datasource.username=postgres      
+spring.datasource.password=postgres       
 ```
 
 ---
@@ -153,16 +157,15 @@ python3 -m http.server 3000
 
 ---
 
-## 🔑 Default Login
+Default Login
 
-```
-URL:      http://localhost:8080/swagger-ui.html  (API docs)
-Frontend: open frontend/index.html
+Admin:
+email: admin@jala.com
+password: admin123
 
-Admin:  admin@jala.com / admin123
-User:   john@jala.com  / user123
-```
-
+User:
+email: john@jala.com
+password: user123
 ---
 
 ## 📡 API Endpoints
@@ -182,57 +185,6 @@ User:   john@jala.com  / user123
 | PUT | `/api/settings/profile` | Any | Update own profile |
 | PUT | `/api/settings/change-password` | Any | Change password |
 
-### Search API — Query Parameters
-
-```
-GET /api/employees/search
-  ?keyword=john        # search name or email
-  &status=ACTIVE       # ACTIVE | INACTIVE
-  &role=USER           # ADMIN | USER
-  &page=0              # 0-based page number
-  &size=10             # items per page
-  &sortBy=createdAt    # field to sort
-  &sortDir=desc        # asc | desc
-```
-
-### Response Format
-
-```json
-{
-  "success": true,
-  "message": "Employees fetched",
-  "data": { ... },
-  "timestamp": "2024-01-15T10:30:00"
-}
-```
-
----
-
-## 🎨 Frontend Features
-
-| Feature | Location in UI |
-|---------|----------------|
-| Login with JWT | Login page |
-| Dashboard stats | Dashboard page |
-| Employee CRUD | Employees page (Admin) |
-| Search + Filter | Employees page |
-| Pagination + Sort | Employees page |
-| Tab switching | More → Tabs Demo |
-| Nested sidebar menu | More Features submenu |
-| Autocomplete | More → Autocomplete |
-| Accordion (FAQ) | More → Accordion |
-| Image upload + preview | More → Image Upload |
-| Range sliders | More → Slider |
-| CSS-only tooltips | More → Slider (hover buttons) |
-| Popup / confirm modal | Any delete action |
-| Internal links | More → Links |
-| CSS properties demo | More → CSS Demo |
-| iFrame embed | More → iFrame |
-| Profile update | Settings |
-| Change password | Settings |
-| Logout with confirm | Sidebar bottom |
-
----
 
 ## 🔐 Security Architecture
 
@@ -283,66 +235,3 @@ Entity        → JPA-mapped PostgreSQL table with audit fields
 
 ---
 
-## 🗄️ Database Schema
-
-```sql
-employees (
-  id            BIGSERIAL PRIMARY KEY,
-  name          VARCHAR(100) NOT NULL,
-  email         VARCHAR(150) NOT NULL UNIQUE,
-  password      VARCHAR(255) NOT NULL,       -- BCrypt hash
-  role          VARCHAR(20) NOT NULL,        -- ADMIN | USER
-  status        VARCHAR(20) DEFAULT 'ACTIVE',-- ACTIVE | INACTIVE
-  phone         VARCHAR(20),
-  department    VARCHAR(100),
-  designation   VARCHAR(100),
-  profile_image VARCHAR(255),
-  created_at    TIMESTAMP DEFAULT NOW(),
-  updated_at    TIMESTAMP DEFAULT NOW()
-)
-```
-
-Indexes on: `email` (unique), `status`, `role`, `department`
-
----
-
-## 🏷️ Key Libraries & Versions
-
-| Library | Version | Purpose |
-|---------|---------|---------|
-| Spring Boot | 3.2.0 | Framework |
-| Spring Security | 6.x | Auth & RBAC |
-| Spring Data JPA | 3.x | ORM layer |
-| JJWT | 0.11.5 | JWT tokens |
-| PostgreSQL Driver | Latest | DB connection |
-| Lombok | Latest | Boilerplate reduction |
-| SpringDoc OpenAPI | 2.3.0 | Swagger UI |
-| BCrypt | Built-in | Password hashing |
-
----
-
-## 💡 Interview Notes
-
-- **Soft Delete**: `status = INACTIVE` instead of `DELETE FROM` — preserves history
-- **DTO Pattern**: Entities never sent directly; mapped to response DTOs (no password leakage)
-- **Global Exception Handler**: Single `@RestControllerAdvice` handles all errors uniformly
-- **@Transactional**: Read-only transactions for queries (better performance), write transactions for mutations
-- **Lombok**: `@Data`, `@Builder`, `@RequiredArgsConstructor` reduce boilerplate significantly
-- **Layered Architecture**: Controller → Service Interface → ServiceImpl → Repository → Entity
-- **JPQL Queries**: Named parameter queries with `@Query` for complex search/filter
-- **Spring Security Stateless**: No HTTP session — JWT in every request header
-- **BCrypt**: Auto-salted password hashing — never compare plaintext to hash directly
-- **Pageable**: Spring Data handles `LIMIT`/`OFFSET`/`ORDER BY` automatically
-
----
-
-## 🐛 Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| CORS error in browser | Backend allows all origins; check `SecurityConfig.corsConfigurationSource()` |
-| 401 Unauthorized | Token expired or missing; re-login |
-| 403 Forbidden | USER trying to access ADMIN endpoint |
-| DB connection refused | Check PostgreSQL is running + credentials in `application.properties` |
-| Port 8080 in use | Change `server.port` in `application.properties` |
-| Image upload fails | Check `uploads/` directory exists; app auto-creates it |
