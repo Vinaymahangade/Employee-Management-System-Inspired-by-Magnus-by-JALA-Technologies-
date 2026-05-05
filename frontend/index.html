@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JALA Employee Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     LOGIN PAGE
+═══════════════════════════════════════════════════════ -->
+<div id="login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <h2>🏢 JALA EMS</h2>
+      <p>Employee Management System</p>
+    </div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="loginEmail">Email Address</label>
+        <input type="email" id="loginEmail" class="form-control" placeholder="admin@jala.com" required>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+      </div>
+      <p id="loginError" class="form-error" style="margin-bottom:12px"></p>
+      <button type="submit" id="loginBtn" class="btn btn-primary" style="width:100%">Login</button>
+    </form>
+    <p class="text-muted text-center mt-2" style="font-size:12px">
+      Default: admin@jala.com / admin123
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN APP LAYOUT
+═══════════════════════════════════════════════════════ -->
+<div id="app" class="hidden">
+
+  <!-- ── Sidebar ─────────────────────────────────────── -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">🏢 JALA EMS</span>
+      <button id="toggleSidebar" title="Toggle Sidebar">☰</button>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="nav-item">
+        <button class="nav-link active" data-page="dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Dashboard</span>
+        </button>
+      </li>
+
+      <li class="nav-item admin-only">
+        <button class="nav-link" data-page="employees">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Employees</span>
+        </button>
+      </li>
+
+      <!-- Nested Menu Example -->
+      <li class="nav-item">
+        <button class="nav-link" data-submenu="moreSubMenu">
+          <span class="nav-icon">🔧</span>
+          <span class="nav-label">More Features</span>
+          <span class="arrow">▶</span>
+        </button>
+        <ul id="moreSubMenu" class="sub-menu hidden">
+          <li><button class="nav-link" data-page="tabs">
+            <span class="nav-icon">📑</span>
+            <span class="nav-label">Tabs Demo</span>
+          </button></li>
+          <li><button class="nav-link" data-page="accordion">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">Accordion</span>
+          </button></li>
+          <li><button class="nav-link" data-page="autocomplete">
+            <span class="nav-icon">🔍</span>
+            <span class="nav-label">Autocomplete</span>
+          </button></li>
+          <li><button class="nav-link" data-page="upload">
+            <span class="nav-icon">🖼</span>
+            <span class="nav-label">Image Upload</span>
+          </button></li>
+          <li><button class="nav-link" data-page="slider">
+            <span class="nav-icon">🎚</span>
+            <span class="nav-label">Slider</span>
+          </button></li>
+          <li><button class="nav-link" data-page="css-demo">
+            <span class="nav-icon">🎨</span>
+            <span class="nav-label">CSS Demo</span>
+          </button></li>
+          <li><button class="nav-link" data-page="iframe">
+            <span class="nav-icon">🌐</span>
+            <span class="nav-label">iFrame</span>
+          </button></li>
+          <li><button class="nav-link" data-page="links">
+            <span class="nav-icon">🔗</span>
+            <span class="nav-label">Links</span>
+          </button></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <button class="nav-link" data-page="settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button class="nav-link" id="logoutBtn">
+        <span class="nav-icon">🚪</span>
+        <span class="nav-label">Logout</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Main Content ──────────────────────────────── -->
+  <div id="main">
+
+    <!-- Header -->
+    <header id="header">
+      <span id="headerTitle" class="header-title">Dashboard</span>
+      <div class="header-right">
+        <div class="user-badge">
+          <div class="avatar" id="headerAvatar">U</div>
+          <span id="headerUserName">User</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="content">
+
+      <!-- ═══════ DASHBOARD PAGE ═══════ -->
+      <div id="page-dashboard" class="page active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="statTotal">—</div>
+            <div class="stat-label">Total Employees</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-number" id="statActive">—</div>
+            <div class="stat-label">Active</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-number" id="statInactive">—</div>
+            <div class="stat-label">Inactive</div>
+          </div>
+          <div class="stat-card yellow">
+            <div class="stat-number" id="statAdmins">—</div>
+            <div class="stat-label">Admins</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Department Breakdown</div>
+          <div id="deptBreakdown"><p class="text-muted">Loading...</p></div>
+        </div>
+      </div>
+
+      <!-- ═══════ EMPLOYEES PAGE ═══════ -->
+      <div id="page-employees" class="page">
+        <div class="card">
+          <div class="section-header">
+            <span class="card-title mb-0">Employee List</span>
+            <button id="addEmployeeBtn" class="btn btn-primary admin-only">+ Add Employee</button>
+          </div>
+
+          <!-- Search & Filters -->
+          <div class="search-bar">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search name or email...">
+            <select id="filterStatus" class="form-control" style="max-width:140px">
+              <option value="">All Status</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+            </select>
+            <select id="filterRole" class="form-control" style="max-width:130px">
+              <option value="">All Roles</option>
+              <option value="ADMIN">Admin</option>
+              <option value="USER">User</option>
+            </select>
+            <select id="sortBySelect" class="form-control" style="max-width:140px">
+              <option value="createdAt">Sort: Date</option>
+              <option value="name">Sort: Name</option>
+              <option value="email">Sort: Email</option>
+            </select>
+            <button id="sortDirBtn" class="btn btn-secondary">↓ Desc</button>
+            <button id="resetFiltersBtn" class="btn btn-secondary">Reset</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Name</th><th>Email</th><th>Department</th>
+                  <th>Role</th><th>Status</th><th>Created</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="employeeTableBody">
+                <tr><td colspan="8" class="text-center">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex" style="justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px">
+            <span id="pageInfo" class="page-info"></span>
+            <div id="pagination" class="pagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ TABS PAGE ═══════ -->
+      <div id="page-tabs" class="page">
+        <div class="card">
+          <div class="card-title">Tab Switching Demo</div>
+          <div class="tab-container">
+            <div class="tab-list">
+              <button class="tab-btn active" data-tab="tab1">Overview</button>
+              <button class="tab-btn" data-tab="tab2">Details</button>
+              <button class="tab-btn" data-tab="tab3">Activity</button>
+              <button class="tab-btn" data-tab="tab4">Reports</button>
+            </div>
+            <div class="tab-panel active" data-tab="tab1">
+              <h4>Overview Tab</h4>
+              <p class="text-muted mt-2">This is the overview panel. Click the tabs above to switch between content panels. Each tab shows different content without a page reload.</p>
+              <div class="stats-grid" style="margin-top:16px">
+                <div class="stat-card"><div class="stat-number">42</div><div class="stat-label">Projects</div></div>
+                <div class="stat-card green"><div class="stat-number">18</div><div class="stat-label">Completed</div></div>
+                <div class="stat-card yellow"><div class="stat-number">24</div><div class="stat-label">In Progress</div></div>
+              </div>
+            </div>
+            <div class="tab-panel" data-tab="tab2">
+              <h4>Details Tab</h4>
+              <p class="text-muted mt-2">Detailed information appears here. You can nest any content inside a tab panel — forms, tables, charts, etc.</p>
+              <table style="margin-top:16px;width:100%;border-collapse:collapse">
+                <thead><tr><th style="border:1px solid var(--border);padding:8px">Field</th><th style="border:1px solid var(--border);padding:8px">Value</th></tr></thead>
+                <tbody>
+                  <tr><td style="border:1px solid var(--border);padding:8px">System</td><td style="border:1px solid var(--border);padding:8px">JALA EMS v1.0</td></tr>
+                  <tr><td style="border:1px solid var(--border);padding:8px">Backend</td><td style="border:1px solid var(--border);padding:8px">Spring Boot 3.2</td></tr>
+                  <tr><td style="border:1px solid var(--border);padding:8px">Database</td><td style="border:1px solid var(--border);padding:8px">PostgreSQL 15</td></tr>
+                  <tr><td style="border:1px solid var(--border);padding:8px">Auth</td><td style="border:1px solid var(--border);padding:8px">JWT / BCrypt</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-panel" data-tab="tab3">
+              <h4>Activity Tab</h4>
+              <ul style="list-style:none;margin-top:12px">
+                <li style="padding:10px 0;border-bottom:1px solid var(--border)">✅ Employee John Doe created — 2 hours ago</li>
+                <li style="padding:10px 0;border-bottom:1px solid var(--border)">🔄 Profile Jane Smith updated — 5 hours ago</li>
+                <li style="padding:10px 0;border-bottom:1px solid var(--border)">🗑 Employee #12 deactivated — 1 day ago</li>
+                <li style="padding:10px 0">🔑 Admin login from 192.168.1.100 — 2 days ago</li>
+              </ul>
+            </div>
+            <div class="tab-panel" data-tab="tab4">
+              <h4>Reports Tab</h4>
+              <p class="text-muted mt-2">Monthly reports and analytics would appear here.</p>
+              <div style="margin-top:16px;background:var(--bg);padding:20px;border-radius:var(--radius);text-align:center;color:var(--text-muted)">
+                📈 Chart / Report content would render here
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nested Tabs Example -->
+        <div class="card">
+          <div class="card-title">Nested Tabs</div>
+          <div class="tab-container">
+            <div class="tab-list">
+              <button class="tab-btn active" data-tab="nested1">Section A</button>
+              <button class="tab-btn" data-tab="nested2">Section B</button>
+            </div>
+            <div class="tab-panel active" data-tab="nested1">
+              <p class="text-muted">Content for Section A — tabs can be nested inside other components.</p>
+            </div>
+            <div class="tab-panel" data-tab="nested2">
+              <p class="text-muted">Content for Section B.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ ACCORDION PAGE ═══════ -->
+      <div id="page-accordion" class="page">
+        <div class="card">
+          <div class="card-title">Collapsible Accordion</div>
+          <div class="accordion">
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <span>What is JWT Authentication?</span><span>▼</span>
+              </div>
+              <div class="accordion-body">
+                <p>JWT (JSON Web Token) is a compact, URL-safe token format used for securely transmitting information between parties. In our system, on login the server generates a signed JWT containing the user's email and role. The client stores it and sends it in every subsequent request via the <code>Authorization: Bearer &lt;token&gt;</code> header.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <span>What is Soft Delete?</span><span>▼</span>
+              </div>
+              <div class="accordion-body">
+                <p>Soft delete means the record is not physically removed from the database. Instead, its status is set to <strong>INACTIVE</strong>. This preserves historical data, allows audit trails, and lets you reactivate records. Our <code>DELETE /api/employees/{id}</code> endpoint performs a soft delete.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <span>How does Role-Based Access work?</span><span>▼</span>
+              </div>
+              <div class="accordion-body">
+                <p>Roles are stored in the employees table (ADMIN or USER). Spring Security reads the role from the JWT, and endpoints are protected using <code>@PreAuthorize("hasRole('ADMIN')")</code>. The UI also hides admin-only buttons for USER-role accounts.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <span>How is pagination implemented?</span><span>▼</span>
+              </div>
+              <div class="accordion-body">
+                <p>The search endpoint accepts <code>page</code>, <code>size</code>, <code>sortBy</code>, and <code>sortDir</code> query parameters. Spring Data JPA's <code>Pageable</code> interface handles the SQL <code>LIMIT</code>, <code>OFFSET</code>, and <code>ORDER BY</code> automatically. The response includes <code>totalElements</code>, <code>totalPages</code>, and <code>content</code> array.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <span>Tech Stack Details</span><span>▼</span>
+              </div>
+              <div class="accordion-body">
+                <ul style="list-style:disc;padding-left:20px;line-height:2">
+                  <li><strong>Backend:</strong> Spring Boot 3.2, Spring Security, Spring Data JPA</li>
+                  <li><strong>Database:</strong> PostgreSQL 15 with Hibernate ORM</li>
+                  <li><strong>Auth:</strong> JWT (JJWT library), BCrypt password hashing</li>
+                  <li><strong>Docs:</strong> Swagger UI via SpringDoc OpenAPI</li>
+                  <li><strong>Frontend:</strong> Vanilla HTML, CSS, JavaScript (no frameworks)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ AUTOCOMPLETE PAGE ═══════ -->
+      <div id="page-autocomplete" class="page">
+        <div class="card">
+          <div class="card-title">Autocomplete Search</div>
+          <p class="text-muted" style="margin-bottom:16px">Type at least 2 characters to see live suggestions from the backend API.</p>
+          <div class="autocomplete-wrapper" style="max-width:400px">
+            <input type="text" id="autocompleteInput" class="form-control" placeholder="Type employee name or email...">
+            <div id="autocompleteList" class="autocomplete-list"></div>
+          </div>
+          <p id="acResult" class="mt-2" style="color:var(--secondary);font-weight:500"></p>
+          <hr class="divider">
+          <h4 style="margin-bottom:12px">How it works</h4>
+          <ol style="padding-left:20px;line-height:2;color:var(--text-muted)">
+            <li>User types in the input field</li>
+            <li>Debounced API call fires after 300ms pause: <code>GET /api/employees/autocomplete?query=john</code></li>
+            <li>Backend returns top 10 matching employees by name or email</li>
+            <li>Results are rendered as a dropdown list</li>
+            <li>Clicking a result selects it and closes the dropdown</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- ═══════ IMAGE UPLOAD PAGE ═══════ -->
+      <div id="page-upload" class="page">
+        <div class="card">
+          <div class="card-title">Image Upload & Display</div>
+          <div class="form-group" style="max-width:300px">
+            <label>Employee ID to Upload For</label>
+            <input type="number" id="uploadEmpId" class="form-control" placeholder="Enter employee ID">
+          </div>
+
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" accept="image/*">
+            <p style="font-size:32px">🖼</p>
+            <p style="font-weight:500;margin-top:8px">Click or drag & drop image here</p>
+            <p class="text-muted" style="font-size:12px;margin-top:4px">JPG, PNG, GIF up to 10MB</p>
+          </div>
+
+          <div id="uploadPreview" class="upload-preview hidden">
+            <img id="uploadPreviewImg" src="" alt="Preview">
+            <p id="uploadFileName" class="text-muted mt-2"></p>
+          </div>
+
+          <button id="uploadImageBtn" class="btn btn-primary" style="margin-top:16px">Upload Image</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">API Endpoint Info</div>
+          <code style="display:block;background:var(--bg);padding:12px;border-radius:var(--radius);font-size:13px">
+            POST /api/employees/{id}/upload-image<br>
+            Content-Type: multipart/form-data<br>
+            Authorization: Bearer &lt;token&gt;<br><br>
+            Form field: file (image file)
+          </code>
+        </div>
+      </div>
+
+      <!-- ═══════ SLIDER PAGE ═══════ -->
+      <div id="page-slider" class="page">
+        <div class="card">
+          <div class="card-title">Range Slider Demos</div>
+
+          <div class="form-group">
+            <label>Salary Range: <span id="salaryDisplay" class="slider-value">50000</span> ₹</label>
+            <div class="slider-wrapper">
+              <input type="range" min="10000" max="200000" value="50000" step="5000" data-display="salaryDisplay">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Experience (years): <span id="expDisplay" class="slider-value">3</span></label>
+            <div class="slider-wrapper">
+              <input type="range" min="0" max="30" value="3" data-display="expDisplay">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Team Size: <span id="teamDisplay" class="slider-value">10</span> members</label>
+            <div class="slider-wrapper">
+              <input type="range" min="1" max="100" value="10" data-display="teamDisplay">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Performance Score: <span id="perfDisplay" class="slider-value">75</span>/100</label>
+            <div class="slider-wrapper">
+              <input type="range" min="0" max="100" value="75" data-display="perfDisplay">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Tooltip Demo</div>
+          <p class="text-muted" style="margin-bottom:16px">Hover over buttons below to see tooltips (CSS-only, no JavaScript).</p>
+          <div class="flex gap-2" style="flex-wrap:wrap">
+            <button class="btn btn-primary" data-tooltip="Create new employee record">+ New Employee</button>
+            <button class="btn btn-secondary" data-tooltip="Download as Excel or CSV">📥 Export</button>
+            <button class="btn btn-danger" data-tooltip="Permanently deactivate this account">🗑 Delete</button>
+            <button class="btn btn-success" data-tooltip="Send email notification">📧 Notify</button>
+            <button class="btn btn-secondary" data-tooltip="Refresh data from server">🔄 Refresh</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ CSS PROPERTIES DEMO PAGE ═══════ -->
+      <div id="page-css-demo" class="page">
+        <div class="card">
+          <div class="card-title">CSS Properties Demo</div>
+          <div class="css-demo-grid">
+            <div class="css-demo-box" style="background:#e3f2fd;color:#1565c0">Primary Blue</div>
+            <div class="css-demo-box" style="background:#e8f5e9;color:#2e7d32">Success Green</div>
+            <div class="css-demo-box" style="background:#ffebee;color:#c62828">Danger Red</div>
+            <div class="css-demo-box" style="background:#fffde7;color:#f57f17">Warning Yellow</div>
+            <div class="css-demo-box" style="background:#f3e5f5;color:#6a1b9a">Purple</div>
+            <div class="css-demo-box" style="background:#1e2a3a;color:#c8d6e5">Dark Sidebar</div>
+            <div class="css-demo-box" style="background:linear-gradient(135deg,#1a73e8,#34a853);color:#fff">Gradient</div>
+            <div class="css-demo-box" style="background:#333;color:#fff;border-radius:50px">Pill Shape</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Typography Scale</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:28px;font-weight:700">H1 — 28px Bold</span>
+            <span style="font-size:22px;font-weight:600">H2 — 22px Semibold</span>
+            <span style="font-size:18px;font-weight:600">H3 — 18px Semibold</span>
+            <span style="font-size:16px;font-weight:500">H4 — 16px Medium</span>
+            <span style="font-size:14px">Body — 14px Regular</span>
+            <span style="font-size:12px;color:var(--text-muted)">Caption — 12px Muted</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Shadow & Border Radius</div>
+          <div class="css-demo-grid">
+            <div class="css-demo-box" style="background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.1);border:1px solid #ddd">Small Shadow</div>
+            <div class="css-demo-box" style="background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.15);border:1px solid #ddd">Medium Shadow</div>
+            <div class="css-demo-box" style="background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.2);border:1px solid #ddd">Large Shadow</div>
+            <div class="css-demo-box" style="background:#e3f2fd;border-radius:0">Square</div>
+            <div class="css-demo-box" style="background:#e3f2fd;border-radius:8px">Rounded</div>
+            <div class="css-demo-box" style="background:#e3f2fd;border-radius:50px">Pill</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ IFRAME PAGE ═══════ -->
+      <div id="page-iframe" class="page">
+        <div class="card">
+          <div class="card-title">Embedded iFrame</div>
+          <p class="text-muted" style="margin-bottom:12px">Example of embedding an external website inside the application using an <code>&lt;iframe&gt;</code> element.</p>
+          <div class="iframe-wrapper">
+            <iframe
+              src="https://www.openstreetmap.org/export/embed.html?bbox=72.77,18.87,73.07,19.17&layer=mapnik"
+              title="OpenStreetMap - Mumbai"
+              loading="lazy">
+            </iframe>
+          </div>
+          <p class="text-muted mt-2" style="font-size:12px">
+            ↑ OpenStreetMap embedded via iframe — demonstrates how external content can be embedded securely.
+            Note: many sites block iframe embedding via X-Frame-Options.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══════ LINKS PAGE ═══════ -->
+      <div id="page-links" class="page">
+        <div class="card">
+          <div class="card-title">Internal Navigation Links</div>
+          <div class="link-demo">
+            <a href="#" onclick="navigateTo('dashboard');return false">📊 Dashboard</a>
+            <a href="#" onclick="navigateTo('employees');return false">👥 Employees</a>
+            <a href="#" onclick="navigateTo('settings');return false">⚙️ Settings</a>
+            <a href="#" onclick="navigateTo('accordion');return false">📋 Accordion</a>
+            <a href="#" onclick="navigateTo('autocomplete');return false">🔍 Autocomplete</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">External Links</div>
+          <div class="link-demo">
+            <a href="http://localhost:8080/swagger-ui.html" target="_blank">📄 Swagger API Docs</a>
+            <a href="http://localhost:8080/api-docs" target="_blank">📝 OpenAPI JSON</a>
+            <a href="https://spring.io/projects/spring-boot" target="_blank">🌱 Spring Boot Docs</a>
+            <a href="https://www.postgresql.org/docs/" target="_blank">🐘 PostgreSQL Docs</a>
+            <a href="https://jwt.io" target="_blank">🔑 JWT.io</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">API Endpoints Reference</div>
+          <table>
+            <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-user">POST</span></td><td><code>/api/auth/login</code></td><td>Login & get JWT</td><td>Public</td></tr>
+              <tr><td><span class="badge badge-active">GET</span></td><td><code>/api/employees/dashboard</code></td><td>Dashboard stats</td><td>Any</td></tr>
+              <tr><td><span class="badge badge-admin">POST</span></td><td><code>/api/employees</code></td><td>Create employee</td><td>Admin</td></tr>
+              <tr><td><span class="badge badge-active">GET</span></td><td><code>/api/employees/{id}</code></td><td>Get by ID</td><td>Any</td></tr>
+              <tr><td><span class="badge badge-user">PUT</span></td><td><code>/api/employees/{id}</code></td><td>Update employee</td><td>Admin</td></tr>
+              <tr><td><span class="badge badge-inactive">DELETE</span></td><td><code>/api/employees/{id}</code></td><td>Soft delete</td><td>Admin</td></tr>
+              <tr><td><span class="badge badge-active">GET</span></td><td><code>/api/employees/search</code></td><td>Search + filter + page</td><td>Any</td></tr>
+              <tr><td><span class="badge badge-active">GET</span></td><td><code>/api/employees/autocomplete</code></td><td>Autocomplete</td><td>Any</td></tr>
+              <tr><td><span class="badge badge-admin">POST</span></td><td><code>/api/employees/{id}/upload-image</code></td><td>Upload image</td><td>Any</td></tr>
+              <tr><td><span class="badge badge-active">GET</span></td><td><code>/api/settings/profile</code></td><td>Get own profile</td><td>Any</td></tr>
+              <tr><td><span class="badge badge-user">PUT</span></td><td><code>/api/settings/profile</code></td><td>Update own profile</td><td>Any</td></tr>
+              <tr><td><span class="badge badge-user">PUT</span></td><td><code>/api/settings/change-password</code></td><td>Change password</td><td>Any</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════ SETTINGS PAGE ═══════ -->
+      <div id="page-settings" class="page">
+        <div class="card" style="max-width:600px">
+          <div class="card-title">Update Profile</div>
+          <form id="profileForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="settingName" class="form-control" placeholder="Full name">
+              </div>
+              <div class="form-group">
+                <label>Email (read-only)</label>
+                <input type="email" id="settingEmail" class="form-control" disabled style="background:var(--bg)">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="settingPhone" class="form-control" placeholder="10-digit phone">
+              </div>
+              <div class="form-group">
+                <label>Department</label>
+                <input type="text" id="settingDept" class="form-control" placeholder="Department">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Designation</label>
+              <input type="text" id="settingDesig" class="form-control" placeholder="Job title">
+            </div>
+            <button type="submit" id="saveProfileBtn" class="btn btn-primary">Save Profile</button>
+          </form>
+        </div>
+
+        <div class="card" style="max-width:600px">
+          <div class="card-title">Change Password</div>
+          <form id="passwordForm">
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" id="currentPassword" class="form-control" placeholder="Current password">
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" id="newPassword" class="form-control" placeholder="Min 6 characters">
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <input type="password" id="confirmPassword" class="form-control" placeholder="Repeat new password">
+            </div>
+            <button type="submit" id="savePasswordBtn" class="btn btn-primary">Change Password</button>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════════════ -->
+
+<!-- Add / Edit Employee Modal -->
+<div id="empModal" class="modal-overlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span id="empModalTitle" class="modal-title">Add Employee</span>
+      <button class="modal-close" onclick="Modal.close('empModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="empForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="empName" class="form-control" placeholder="Full name">
+            <span id="empNameError" class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="empEmail" class="form-control" placeholder="employee@jala.com">
+            <span id="empEmailError" class="form-error"></span>
+          </div>
+        </div>
+        <div id="empPasswordGroup" class="form-group">
+          <label>Password *</label>
+          <input type="password" id="empPassword" class="form-control" placeholder="Min 6 characters">
+          <span id="empPasswordError" class="form-error"></span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Role *</label>
+            <select id="empRole" class="form-control">
+              <option value="">Select Role</option>
+              <option value="ADMIN">Admin</option>
+              <option value="USER">User</option>
+            </select>
+            <span id="empRoleError" class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="empStatus" class="form-control">
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="empPhone" class="form-control" placeholder="10-digit number">
+            <span id="empPhoneError" class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" id="empDept" class="form-control" placeholder="Engineering, HR...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Designation</label>
+          <input type="text" id="empDesig" class="form-control" placeholder="Software Developer...">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('empModal')">Cancel</button>
+      <button class="btn btn-primary" id="saveEmpBtn" onclick="document.getElementById('empForm').dispatchEvent(new Event('submit'))">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Employee Modal -->
+<div id="viewModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Employee Details</span>
+      <button class="modal-close" onclick="Modal.close('viewModal')">×</button>
+    </div>
+    <div class="modal-body" id="viewModalContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('viewModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm / Delete Modal -->
+<div id="confirmModal" class="modal-overlay">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <span class="modal-title">Confirm Action</span>
+      <button class="modal-close" onclick="Modal.close('confirmModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMessage"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('confirmModal')">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
